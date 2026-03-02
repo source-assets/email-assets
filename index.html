@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil — Mjukvaruutvecklare med designfokus</title>
+    <meta name="description" content="Tvärvetenskaplig mjukvaruutvecklare med UX/UI-design, React, Next.js, TypeScript och systemarkitektur.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@200;300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* ═══════════════════════════════════════════════════
+           CYBERPUNK PROFIL — WEBBLÄSARVERSION
+           GitHub Pages / Vercel — Full JS + CSS animations
+           Tema: Mörkt (default) / Ljust (toggle)
+           Språk: SV (default) / EU / CAS — JS-driven
+        ═══════════════════════════════════════════════════ */
+
+        :root {
+            --bg-deep:      #050038;
+            --bg-mid:       #080045;
+            --bg-surface:   #0d0060;
+            --bg-card:      rgba(6, 182, 212, 0.04);
+            --bg-card-hover:rgba(6, 182, 212, 0.08);
+            --neon-cyan:    #06B6D4;
+            --neon-pink:    #FF3366;
+            --neon-purple:  #8B5CF6;
+            --neon-yellow:  #F59E0B;
+            --neon-green:   #10B981;
+            --neon-orange:  #F97316;
+            --text-bright:  rgba(224, 242, 254, 0.95);
+            --text-mid:     rgba(148, 214, 240, 0.72);
+            --text-dim:     rgba(100, 160, 190, 0.5);
+            --border-glow:  rgba(6, 182, 212, 0.18);
+            --border-hot:   rgba(255, 51, 102, 0.35);
+            --shadow-card:  0 4px 24px rgba(6, 182, 212, 0.07);
+            --transition:   all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="light"] {
+            --bg-deep:      #eef2ff;
+            --bg-mid:       #f4f7ff;
+            --bg-surface:   #ffffff;
+            --bg-card:      rgba(139, 92, 246, 0.04);
+            --bg-card-hover:rgba(139, 92, 246, 0.08);
+            --neon-cyan:    #0891b2;
+            --neon-pink:    #e11d48;
+            --neon-purple:  #7c3aed;
+            --text-bright:  rgba(15, 23, 42, 0.95);
+            --text-mid:     rgba(51, 65, 85, 0.75);
+            --text-dim:     rgba(100, 116, 139, 0.6);
+            --border-glow:  rgba(139, 92, 246, 0.18);
+            --border-hot:   rgba(225, 29, 72, 0.25);
+            --shadow-card:  0 4px 24px rgba(139, 92, 246, 0.07);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Syne', -apple-system, sans-serif;
+            background: var(--bg-deep);
+            color: var(--text-bright);
+            line-height: 1.7;
+            min-height: 100vh;
+            transition: background 0.5s ease, color 0.5s ease;
+            overflow-x: hidden;
+        }
+
+        /* ── Ambient background ── */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 70% 50% at 15% 25%, rgba(139, 92, 246, 0.1) 0%, transparent 55%),
+                radial-gradient(ellipse 50% 60% at 85% 75%, rgba(6, 182, 212, 0.08) 0%, transparent 55%),
+                radial-gradient(ellipse 40% 30% at 50% 10%, rgba(255, 51, 102, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+            transition: opacity 0.5s;
+        }
+
+        /* ── Scanlines ── */
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 3px,
+                rgba(6, 182, 212, 0.008) 3px,
+                rgba(6, 182, 212, 0.008) 4px
+            );
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        [data-theme="light"] body::before {
+            background:
+                radial-gradient(ellipse 70% 50% at 15% 25%, rgba(139, 92, 246, 0.06) 0%, transparent 55%),
+                radial-gradient(ellipse 50% 60% at 85% 75%, rgba(6, 182, 212, 0.04) 0%, transparent 55%);
+        }
+        [data-theme="light"] body::after { display: none; }
+
+        /* ── Layout wrapper ── */
+        .page-wrapper {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 24px 16px 60px;
+        }
+
+        /* ── Browser-chrome frame ── */
+        .browser-frame {
+            width: 100%;
+            max-width: 720px;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border-glow);
+            box-shadow:
+                0 0 60px rgba(6, 182, 212, 0.1),
+                0 0 120px rgba(139, 92, 246, 0.06),
+                inset 0 1px 0 rgba(6, 182, 212, 0.2);
+            animation: frame-appear 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        @keyframes frame-appear {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── Topbar ── */
+        .topbar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 20px;
+            background: var(--bg-mid);
+            border-bottom: 1px solid var(--border-glow);
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            color: var(--text-dim);
+            transition: background 0.5s;
+        }
+
+        .topbar-dots { display: flex; gap: 6px; }
+        .topbar-dot {
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .topbar-dot:hover { transform: scale(1.3); }
+        .topbar-dot.red    { background: #FF3366; box-shadow: 0 0 8px #FF3366; }
+        .topbar-dot.yellow { background: #F59E0B; box-shadow: 0 0 8px #F59E0B; }
+        .topbar-dot.green  { background: #10B981; box-shadow: 0 0 8px #10B981; }
+
+        .topbar-address {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .address-bar {
+            background: rgba(6, 182, 212, 0.06);
+            border: 1px solid var(--border-glow);
+            border-radius: 6px;
+            padding: 5px 16px;
+            font-size: 10px;
+            color: var(--neon-cyan);
+            letter-spacing: 0.12em;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .address-lock { color: var(--neon-green); font-size: 9px; }
+
+        .topbar-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Tema-knapp */
+        .theme-btn {
+            width: 32px; height: 32px;
+            background: rgba(6, 182, 212, 0.06);
+            border: 1px solid var(--border-glow);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            color: var(--text-mid);
+        }
+        .theme-btn:hover {
+            background: rgba(6, 182, 212, 0.12);
+            border-color: var(--neon-cyan);
+            transform: rotate(15deg) scale(1.05);
+        }
+
+        /* Språkknappar */
+        .lang-switcher { display: flex; gap: 6px; }
+
+        .lang-btn {
+            height: 32px;
+            padding: 0 10px;
+            background: rgba(6, 182, 212, 0.05);
+            border: 1px solid var(--border-glow);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: var(--transition);
+            color: var(--text-dim);
+            font-family: 'Space Mono', monospace;
+            font-size: 9px;
+            letter-spacing: 0.05em;
+            white-space: nowrap;
+        }
+
+        .lang-btn:hover {
+            background: rgba(255, 51, 102, 0.1);
+            border-color: var(--border-hot);
+            color: var(--text-bright);
+            transform: translateY(-2px);
+        }
+
+        .lang-btn.active {
+            background: var(--neon-pink);
+            border-color: var(--neon-pink);
+            color: white;
+            box-shadow: 0 0 14px rgba(255, 51, 102, 0.35);
+        }
+
+        /* ── Innehållsyta ── */
+        .content-area {
+            background: var(--bg-mid);
+            transition: background 0.5s;
+        }
+
+        .content-section {
+            display: none;
+            padding: 48px 40px;
+            animation: section-in 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        .content-section.active { display: block; }
+
+        @keyframes section-in {
+            from { opacity: 0; transform: translateY(12px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── Header ── */
+        .header { margin-bottom: 44px; }
+
+        .header-eyebrow {
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 0.2em;
+            color: var(--neon-cyan);
+            margin-bottom: 10px;
+            opacity: 0;
+            animation: fade-up 0.6s 0.2s forwards;
+        }
+
+        .header h1 {
+            font-size: clamp(2.4rem, 6vw, 3.8rem);
+            font-weight: 200;
+            letter-spacing: -2px;
+            background: linear-gradient(135deg, var(--neon-cyan) 0%, var(--neon-purple) 50%, var(--neon-pink) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 22px;
+            line-height: 1.05;
+            opacity: 0;
+            animation: fade-up 0.6s 0.3s forwards;
+        }
+
+        .header .subtitle {
+            color: var(--text-mid);
+            font-size: 1.07rem;
+            font-weight: 300;
+            line-height: 1.85;
+            max-width: 580px;
+            margin-bottom: 20px;
+            opacity: 0;
+            animation: fade-up 0.6s 0.4s forwards;
+        }
+
+        .intro-note {
+            color: var(--text-dim);
+            font-size: 0.87rem;
+            font-style: italic;
+            max-width: 540px;
+            padding: 14px 20px;
+            background: rgba(6, 182, 212, 0.04);
+            border: 1px solid var(--border-glow);
+            border-left: 3px solid var(--neon-cyan);
+            border-radius: 0 8px 8px 0;
+            font-family: 'Space Mono', monospace;
+            opacity: 0;
+            animation: fade-up 0.6s 0.5s forwards;
+        }
+
+        @keyframes fade-up {
+            from { opacity: 0; transform: translateY(14px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── Expanderbara sektioner ── */
+        .section { margin: 22px 0; }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 20px 22px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-glow);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        .section-header::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 3px;
+            background: linear-gradient(180deg, var(--neon-cyan), var(--neon-purple));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        /* Hover glow sweep */
+        .section-header::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.04), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+
+        .section-header:hover::after { transform: translateX(100%); }
+
+        .section-header:hover,
+        .section-header.open {
+            background: var(--bg-card-hover);
+            border-color: rgba(6, 182, 212, 0.3);
+        }
+        .section-header:hover::before,
+        .section-header.open::before { opacity: 1; }
+
+        .section-header.open {
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
+        .section-icon { font-size: 1.7rem; flex-shrink: 0; }
+
+        .section-title {
+            font-size: 1.18rem;
+            font-weight: 400;
+            color: var(--text-bright);
+            flex: 1;
+        }
+
+        /* Expand pill */
+        .expand-pill {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Space Mono', monospace;
+            font-size: 9px;
+            letter-spacing: 0.1em;
+            color: var(--neon-cyan);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            padding: 5px 12px;
+            border-radius: 4px;
+            white-space: nowrap;
+            transition: var(--transition);
+        }
+
+        .expand-chevron {
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            font-style: normal;
+        }
+
+        .section-header.open .expand-chevron { transform: rotate(180deg); }
+        .section-header:hover .expand-pill {
+            background: rgba(6, 182, 212, 0.1);
+            border-color: rgba(6, 182, 212, 0.5);
+        }
+        .section-header.open .expand-pill {
+            background: rgba(255, 51, 102, 0.1);
+            border-color: rgba(255, 51, 102, 0.35);
+            color: var(--neon-pink);
+        }
+
+        /* Sektionsinnehåll med JS-toggle */
+        .section-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .section-content.open { max-height: 1400px; }
+
+        .section-content-inner {
+            border: 1px solid var(--border-glow);
+            border-top: none;
+            border-radius: 0 0 12px 12px;
+            padding: 28px;
+            background: rgba(5, 0, 40, 0.5);
+            transition: background 0.5s;
+        }
+
+        [data-theme="light"] .section-content-inner {
+            background: rgba(238, 242, 255, 0.6);
+        }
+
+        .section-text {
+            font-size: 0.98rem;
+            color: var(--text-mid);
+            margin-bottom: 26px;
+            line-height: 1.9;
+        }
+
+        .more-hint {
+            font-size: 0.82rem;
+            color: var(--text-dim);
+            font-family: 'Space Mono', monospace;
+            text-align: center;
+            padding: 12px 18px;
+            background: rgba(6, 182, 212, 0.03);
+            border: 1px dashed rgba(6, 182, 212, 0.15);
+            border-radius: 6px;
+            margin-top: 20px;
+        }
+
+        /* ── Kort ── */
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(195px, 1fr));
+            gap: 16px;
+            margin: 22px 0;
+        }
+
+        .card {
+            background: var(--bg-card);
+            padding: 20px;
+            border: 1px solid var(--border-glow);
+            border-radius: 10px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple), var(--neon-pink));
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+            transform-origin: left;
+        }
+
+        .card:hover {
+            background: var(--bg-card-hover);
+            border-color: rgba(6, 182, 212, 0.3);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 28px rgba(6, 182, 212, 0.1);
+        }
+        .card:hover::after { transform: scaleX(1); }
+
+        .card h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--neon-cyan);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-arrow { color: var(--neon-pink); }
+
+        .card p {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            line-height: 1.65;
+        }
+
+        /* ── CTA ── */
+        .cta-section {
+            text-align: center;
+            padding: 50px 40px;
+            background: rgba(5, 0, 40, 0.5);
+            border-top: 1px solid var(--border-glow);
+            position: relative;
+            transition: background 0.5s;
+        }
+
+        [data-theme="light"] .cta-section {
+            background: rgba(238, 242, 255, 0.5);
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 50%; transform: translateX(-50%);
+            width: 160px; height: 1px;
+            background: linear-gradient(90deg, transparent, var(--neon-pink), transparent);
+        }
+
+        .cta-text {
+            color: var(--text-mid);
+            margin-bottom: 28px;
+            font-size: 1rem;
+            max-width: 460px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .cta-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 30px;
+            border-radius: 8px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.82rem;
+            letter-spacing: 0.1em;
+            transition: var(--transition);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .cta-btn.primary {
+            background: transparent;
+            color: var(--neon-cyan);
+            border: 1px solid var(--neon-cyan);
+            box-shadow: 0 0 16px rgba(6, 182, 212, 0.1), inset 0 0 16px rgba(6, 182, 212, 0.03);
+        }
+        .cta-btn.primary:hover {
+            background: var(--neon-cyan);
+            color: #050038;
+            box-shadow: 0 0 32px rgba(6, 182, 212, 0.3);
+            transform: translateY(-3px);
+        }
+
+        .cta-btn.secondary {
+            background: transparent;
+            color: var(--neon-purple);
+            border: 1px solid rgba(139, 92, 246, 0.4);
+        }
+        .cta-btn.secondary:hover {
+            background: rgba(139, 92, 246, 0.1);
+            border-color: var(--neon-purple);
+            transform: translateY(-3px);
+        }
+
+        /* ── Footer ── */
+        .page-footer {
+            margin-top: 32px;
+            text-align: center;
+            font-family: 'Space Mono', monospace;
+            font-size: 9px;
+            color: var(--text-dim);
+            letter-spacing: 0.12em;
+        }
+
+        /* ── Scroll-to-top ── */
+        .scroll-top {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            width: 42px; height: 42px;
+            background: rgba(6, 182, 212, 0.1);
+            border: 1px solid var(--neon-cyan);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 16px;
+            color: var(--neon-cyan);
+            transition: var(--transition);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 100;
+        }
+        .scroll-top.visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .scroll-top:hover {
+            background: var(--neon-cyan);
+            color: #050038;
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.3);
+            transform: translateY(-3px);
+        }
+
+        /* ── Responsiv ── */
+        @media (max-width: 540px) {
+            .page-wrapper { padding: 12px 8px 40px; }
+            .browser-frame { border-radius: 10px; }
+            .content-section { padding: 28px 20px; }
+            .header h1 { font-size: 2.2rem; }
+            .cards-container { grid-template-columns: 1fr; }
+            .cta-section { padding: 36px 20px; }
+            .topbar { padding: 10px 14px; }
+            .address-bar { display: none; }
+            .lang-btn span.lang-label { display: none; }
+        }
+    </style>
+</head>
+<body data-theme="dark">
+
+    <div class="page-wrapper">
+
+        <!-- ── Browser frame ── -->
+        <div class="browser-frame">
+
+            <!-- Topbar -->
+            <div class="topbar">
+                <div class="topbar-dots">
+                    <span class="topbar-dot red"    title="Stäng"></span>
+                    <span class="topbar-dot yellow" title="Minimera"></span>
+                    <span class="topbar-dot green"  title="Maximera"></span>
+                </div>
+
+                <div class="topbar-address">
+                    <div class="address-bar">
+                        <span class="address-lock">🔒</span>
+                        <span id="address-text">profil.dev/sv</span>
+                    </div>
+                </div>
+
+                <div class="topbar-controls">
+                    <button class="theme-btn" id="theme-btn" title="Växla ljust/mörkt läge" aria-label="Växla tema">🌙</button>
+                    <div class="lang-switcher">
+                        <button class="lang-btn active" data-lang="sv" aria-label="Svenska">
+                            🇸🇪 <span class="lang-label">SV</span>
+                        </button>
+                        <button class="lang-btn" data-lang="eu" aria-label="English">
+                            🇪🇺 <span class="lang-label">EU</span>
+                        </button>
+                        <button class="lang-btn" data-lang="cas" aria-label="Castellano">
+                            🇪🇸 <span class="lang-label">CAS</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Innehållsyta -->
+            <div class="content-area">
+
+                <!-- ══════════════════ SVENSKA ══════════════════ -->
+                <div class="content-section active" id="content-sv" lang="sv">
+                    <div class="header">
+                        <div class="header-eyebrow">// MJUKVARUUTVECKLARE — DESIGNFOKUS</div>
+                        <h1>Hej!</h1>
+                        <p class="subtitle">
+                            Jag är en tvärvetenskaplig mjukvaruutvecklare med designfokus som brinner för att skapa användarcentrerade digitala upplevelser. Med över 12 års studier inom UX/UI-design, programmering och systemarkitektur har jag utvecklat en unik förståelse för hela utvecklingskedjan.
+                        </p>
+                        <div class="intro-note">
+                            Detta är en komprimerad översikt av mina kompetenser — en fullständig presentation med projektexempel och djupgående teknisk dokumentation finns tillgänglig i min kompletta profil och CV.
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-header" data-target="edu-sv">
+                            <span class="section-icon">⚈</span>
+                            <span class="section-title">Design och utbildningsbakgrund</span>
+                            <span class="expand-pill">
+                                <em class="expand-chevron">▾</em>
+                                <span class="expand-label">LÄS MER</span>
+                            </span>
+                        </div>
+                        <div class="section-content" id="edu-sv">
+                            <div class="section-content-inner">
+                                <p class="section-text">
+                                    Min tvärvetenskapliga utbildning har fokuserat på användarcentrerad design som grund för all utveckling. Jag tror starkt på "design-first"-principen — att förstå användarbehov och skapa intuitiva upplevelser innan kod skrivs. Denna mentalitet genomsyrar mitt arbete från kravanalys till slutgiltig implementation.
+                                </p>
+                                <div class="cards-container">
+                                    <div class="card">
+                                        <h4><span class="card-arrow">→</span> UX/UI-design</h4>
+                                        <p>Användarforskning, personas, wireframing, prototyping och visuell kommunikation som grund för all utveckling</p>
+                                    </div>
+                                    <div class="card">
+                                        <h4><span class="card-arrow">→</span> Designsystem och arkitektur</h4>
+                                        <p>Skapande av sammanhängande designsystem som stödjer skalbar utveckling och konsistent användarupplevelse</p>
+                                    </div>
+                                    <div class="card">
+                                        <h4><span class="card-arrow">→</span> Tvärvetenskapligt tänkande</h4>
+                                        <p>Integration av design, teknik och affärsförståelse för helhetslösningar som fungerar i verkligheten</p>
+                                    </div>
+                                </div>
+                                <div class="more-hint">▸ Detaljerade fallstudier och designprocessexempel finns dokumenterade i min fullständiga profil</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-header" data-target="skills-sv">
+                            <span class="section-icon">▷</span>
+                            <span class="section-title">Tekniska färdigheter och implementation</span>
+                            <span class="expand-pill">
+                                <em class="expand-chevron">▾</em>
+                                <span class="expand-label">LÄS MER</span>
+                            </span>
+                        </div>
+                        <div class="section-content" id="skills-sv">
+                            <div class="section-content-inner">
+                                <p class="section-text">
+                                    Min tekniska stack är vald för att bäst implementera designvisioner med fokus på prestanda, tillgänglighet och användarupplevelse. Jag arbetar med moderna verktyg som möjliggör snabb prototyping och iterativ utveckling — alltid med designkvalitet som utgångspunkt.
+                                </p>
+                                <div class="cards-container">
+                                    <div class="card">
+                                        <h4><span class="card-arrow">→</span> Modern frontend-utveckling</h4>
+                                        <p>React, Next.js, TypeScript, Tailwind CSS — verktyg som möjliggör designdriven utveckling</p>
+                                    </div>
+                                    <div class="card">
+                                        <h4><span class="card-arrow">→</span> Design-till-kod-implementation</h4>
+                                        <p>Responsiv design, micro-interactions, tillgänglighet och prestandaoptimering</p>
+                                    </div>
+                                    <div class="card">
+                                        <h4><span class="card-arrow">→</span> Utvecklingsprocesser</h4>
+                                        <p>Git-arbetsflöden, agila metoder, prototyping och integration av användartestning</p>
+                                    </div>
+                                </div>
+                                <div class="more-hint">▸ Tekniska djupdykningar och kodexempel med designmotivering finns i min kompletta dokumentation</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cta-section">
+                        <p class="cta-text">Utforska min kompletta profil med detaljerade projektbeskrivningar, designprocesser och teknisk dokumentation</p>
+                        <div class="cta-buttons">
+                            <a href="https://source-two-beta.vercel.app" class="cta-btn primary">FULLSTÄNDIG PROFIL <span>↗</span></a>
+                    <!-- <a href="#" class="cta-btn secondary">KONTAKT <span>→</span></a> -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ══════════════════ EU ══════════════════ -->
+                <div class="content-section" id="content-eu" lang="en">
+                    <div class="header">
+                        <div class="header-eyebrow">// SOFTWARE DEVELOPER — DESIGN FOCUS</div>
+                        <h1>Hello!</h1>
+                        <p class="subtitle">
+                            I'm an interdisciplinary software developer with a design focus, passionate about creating user-centered digital experiences. With over 12 years of study in UX/UI design, programming, and system architecture, I've developed a unique understanding of the entire development pipeline.
+                        </p>
+                        <div class="intro-note">
+                            This is a condensed overview of my competencies — a complete presentation with project examples and in-depth technical documentation is available in my full profile and CV.
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-header" data-target="edu-eu">
+                            <span class="section-icon">⚈</span>
+                            <span class="section-title">Design & educational background</span>
+                            <span class="expand-pill">
+                                <em class="expand-chevron">▾</em>
+                                <span class="expand-label">READ MORE</span>
+                            </span>
+                        </div>
+                        <div class="section-content" id="edu-eu">
+                            <div class="section-content-inner">
+                                <p class="section-text">
+                                    My interdisciplinary education has focused on user-centered design as the foundation for all development. I strongly believe in the "design first" principle — understanding user needs and creating intuitive experiences before writing code. This mindset permeates my work from requirements analysis to final implementation.
+                                </p>
+                                <div class="cards-container">
+                                    <div class="card">
+                                        <h4><span class="card-arrow">→</span> UX/UI design</h4>
+                                        <p>User research, personas, wireframing, prototyping, and visual communication as the foundation for all development</p>
+                                    </div>
+                                    <div class="card">
+                                        <h4><span class="card-arrow">→</span> Design systems & architecture</h4>
+                                        <p>Creating cohesive design systems that support scalable development and consistent user experience</p>
+                                    </div>
+                                    <div class="card">
+                                        <h4><span class="card-arrow">→</span> Interdisciplinary thinking</h4>
+                                        <p>Integration of design, technology, and business understanding for holistic solutions that work in reality</p>
+                                    </div>
+                                </div>
+                                <div class="more-hint">▸ Detailed case studies and design process examples are documented in my complete profile</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-header" data-target="skills-eu">
+                            <span class="section-icon">▷</span>
+                            <span class="section-title">Technical skills & implementation</span>
+                            <span class="expand-pill">
+                                <em class="expand-chevron">▾</em>
+                                <span class="expand-label">READ MORE</span>
+                            </span>
+                        </div>
+                        <div class="section-content" id="skills-eu">
+                            <div class="section-content-inner">
+                                <p class="section-text">
+                                    My technical stack is chosen to best implement design visions with a focus on performance, accessibility, and user experience. I work with modern tools that enable rapid prototyping and iterative development — always with design quality as the starting point.
+                                </p>
+                                <div class="cards-container">
+                                    <div class="card">
+                                        <h4><span class="card-arrow">→</span> Modern frontend development</h4>
+                                        <p>React, Next.js, TypeScript, Tailwind CSS — tools that enable design-driven development</p>
+                                    </div>
+                                    <div class="card">
+                                        <h4><span class="card-arrow">→</span> Design-to-code implementation</h4>
+                                        <p>Responsive design, micro-interactions, accessibility, and performance optimization</p>
+                                    </div>
+                                    <div class="card">
+                                        <h4><span class="card-arrow">→</span> Development processes</h4>
+                                        <p>Git workflows, agile methods, prototyping, and user testing integration</p>
+                                    </div>
+                                </div>
+                                <div class="more-hint">▸ Technical deep-dives and code examples with design rationale available in my complete documentation</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cta-section">
+                        <p class="cta-text">Explore my complete profile with detailed project descriptions, design processes, and technical documentation</p>
+                        <div class="cta-buttons">
+                            <a href="https://source-two-beta.vercel.app" class="cta-btn primary">FULL PROFILE <span>↗</span></a>
+                    <!-- <a href="#" class="cta-btn secondary">CONTACT <span>→</span></a> -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ══════════════════ CAS ══════════════════ -->
+                <div class="content-section" id="content-cas" lang="es">
+                    <div class="header">
+                        <div class="header-eyebrow">// DESARROLLADOR DE SOFTWARE — ENFOQUE EN DISEÑO</div>
+                        <h1>¡Hola!</h1>
+                        <p class="subtitle">
+                            Soy un desarrollador de software interdisciplinario con enfoque en diseño, apasionado por crear experiencias digitales centradas en el usuario. Con más de 12 años de estudio en diseño UX/UI, programación y arquitectura de sistemas, he desarrollado una comprensión única de todo el flujo de desarrollo.
+                        </p>
+                        <div class="intro-note">
+                            Esta es una descripción condensada de mis competencias — una presentación completa con ejemplos de proyectos y documentación técnica detallada está disponible en mi perfil completo y CV.
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-header" data-target="edu-cas">
+                            <span class="section-icon">⚈</span>
+                            <span class="section-title">Diseño y formación académica</span>
+                            <span class="expand-pill">
+                                <em class="expand-chevron">▾</em>
+                                <span class="expand-label">LEER MÁS</span>
+                            </span>
+                        </div>
+                        <div class="section-content" id="edu-cas">
+                            <div class="section-content-inner">
+                                <p class="section-text">
+                                    Mi formación interdisciplinaria se ha enfocado en el diseño centrado en el usuario como base para todo desarrollo. Creo firmemente en el principio "diseño primero" — entender las necesidades del usuario y crear experiencias intuitivas antes de escribir código. Esta mentalidad impregna mi trabajo desde el análisis de requisitos hasta la implementación final.
+                                </p>
+                                <div class="cards-container">
+                                    <div class="card">
+                                        <h4><span class="card-arrow">→</span> Diseño UX/UI</h4>
+                                        <p>Investigación de usuarios, personas, wireframing, prototipado y comunicación visual como base para todo desarrollo</p>
+                                    </div>
+                                    <div class="card">
+                                        <h4><span class="card-arrow">→</span> Sistemas de diseño y arquitectura</h4>
+                                        <p>Creación de sistemas de diseño cohesivos que apoyan el desarrollo escalable y una experiencia de usuario consistente</p>
+                                    </div>
+                                    <div class="card">
+                                        <h4><span class="card-arrow">→</span> Pensamiento interdisciplinario</h4>
+                                        <p>Integración de diseño, tecnología y comprensión empresarial para soluciones holísticas que funcionan en la realidad</p>
+                                    </div>
+                                </div>
+                                <div class="more-hint">▸ Estudios de caso y ejemplos de proceso de diseño documentados en mi perfil completo</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-header" data-target="skills-cas">
+                            <span class="section-icon">▷</span>
+                            <span class="section-title">Habilidades técnicas e implementación</span>
+                            <span class="expand-pill">
+                                <em class="expand-chevron">▾</em>
+                                <span class="expand-label">LEER MÁS</span>
+                            </span>
+                        </div>
+                        <div class="section-content" id="skills-cas">
+                            <div class="section-content-inner">
+                                <p class="section-text">
+                                    Mi stack técnico está elegido para implementar mejor las visiones de diseño con enfoque en rendimiento, accesibilidad y experiencia del usuario. Trabajo con herramientas modernas que permiten prototipado rápido y desarrollo iterativo — siempre con la calidad de diseño como punto de partida.
+                                </p>
+                                <div class="cards-container">
+                                    <div class="card">
+                                        <h4><span class="card-arrow">→</span> Desarrollo frontend moderno</h4>
+                                        <p>React, Next.js, TypeScript, Tailwind CSS — herramientas que permiten desarrollo dirigido por diseño</p>
+                                    </div>
+                                    <div class="card">
+                                        <h4><span class="card-arrow">→</span> Implementación diseño-a-código</h4>
+                                        <p>Diseño responsivo, micro-interacciones, accesibilidad y optimización de rendimiento</p>
+                                    </div>
+                                    <div class="card">
+                                        <h4><span class="card-arrow">→</span> Procesos de desarrollo</h4>
+                                        <p>Flujos de trabajo Git, métodos ágiles, prototipado e integración de pruebas de usuario</p>
+                                    </div>
+                                </div>
+                                <div class="more-hint">▸ Análisis técnicos y ejemplos de código con justificación de diseño en mi documentación completa</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cta-section">
+                        <p class="cta-text">Explora mi perfil completo con descripciones detalladas de proyectos, procesos de diseño y documentación técnica</p>
+                        <div class="cta-buttons">
+                            <a href="https://source-two-beta.vercel.app" class="cta-btn primary">PERFIL COMPLETO <span>↗</span></a>
+		    <!-- <a href="#" class="cta-btn secondary">CONTACTO <span>→</span></a> -->
+                        </div>
+                    </div>
+                </div>
+
+            </div><!-- /content-area -->
+        </div><!-- /browser-frame -->
+
+        <footer class="page-footer">
+            <span id="footer-year"></span> — MJUKVARUUTVECKLARE — STOCKHOLM, SE
+        </footer>
+    </div>
+
+    <!-- Scroll-to-top -->
+    <button class="scroll-top" id="scroll-top" aria-label="Scrolla upp">↑</button>
+
+    <script>
+        /* ── Tema ── */
+        const themeBtn  = document.getElementById('theme-btn');
+        const body      = document.body;
+        const saved     = localStorage.getItem('theme') || 'dark';
+        body.setAttribute('data-theme', saved);
+        themeBtn.textContent = saved === 'dark' ? '🌙' : '☀️';
+
+        themeBtn.addEventListener('click', () => {
+            const next = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            body.setAttribute('data-theme', next);
+            themeBtn.textContent = next === 'dark' ? '🌙' : '☀️';
+            localStorage.setItem('theme', next);
+        });
+
+        /* ── Språk ── */
+        const addressMap = { sv: 'profil.dev/sv', eu: 'profil.dev/eu', cas: 'profil.dev/cas' };
+        const addressEl  = document.getElementById('address-text');
+
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const lang = btn.dataset.lang;
+
+                // Knappar
+                document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                // Innehåll
+                document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+                const section = document.getElementById('content-' + lang);
+                section.classList.add('active');
+
+                // Adressfält
+                addressEl.textContent = addressMap[lang];
+
+                // Stäng alla expanderade sektioner vid språkbyte
+                document.querySelectorAll('.section-header.open').forEach(h => {
+                    h.classList.remove('open');
+                    const target = document.getElementById(h.dataset.target);
+                    if (target) target.classList.remove('open');
+                });
+            });
+        });
+
+        /* ── Expandera sektioner ── */
+        const closeLabelMap = { sv: 'STÄNG', eu: 'CLOSE', cas: 'CERRAR' };
+
+        function getCurrentLang() {
+            const active = document.querySelector('.content-section.active');
+            if (!active) return 'sv';
+            return active.id.replace('content-', '');
+        }
+
+        document.querySelectorAll('.section-header').forEach(header => {
+            header.addEventListener('click', () => {
+                const targetId = header.dataset.target;
+                const content  = document.getElementById(targetId);
+                const label    = header.querySelector('.expand-label');
+                const lang     = getCurrentLang();
+                const isOpen   = content.classList.contains('open');
+
+                if (isOpen) {
+                    content.classList.remove('open');
+                    header.classList.remove('open');
+                    label.textContent = lang === 'eu' ? 'READ MORE' : lang === 'cas' ? 'LEER MÁS' : 'LÄS MER';
+                } else {
+                    content.classList.add('open');
+                    header.classList.add('open');
+                    label.textContent = closeLabelMap[lang] || 'STÄNG';
+                }
+            });
+        });
+
+        /* ── Scroll-to-top ── */
+        const scrollBtn = document.getElementById('scroll-top');
+        window.addEventListener('scroll', () => {
+            scrollBtn.classList.toggle('visible', window.scrollY > 300);
+        });
+        scrollBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+        /* ── Footer år ── */
+        document.getElementById('footer-year').textContent = new Date().getFullYear();
+    </script>
+
+</body>
+</html>
